@@ -1,6 +1,5 @@
-Set Warnings "-notation-overridden".
 From mathcomp Require Import all_algebra.
-Set Warnings "notation-overridden".
+From mathcomp Require Import all_ssreflect.
 From mathcomp Require Import reals.
 From mathcomp Require Import distr probability.
 From SSProve Require Import FreeProbProg.
@@ -26,6 +25,24 @@ Definition prog :=
   bindrFree P_OP P_AR flip (fun b2 =>
     retrFree P_OP P_AR chBool (b1 && b2)
   )).
+
+Lemma probability_fact :
+  \dlet_(s <- dflip (1 / 2 : R))
+  \dlet_(s0 <- dflip (1 / 2 : R))
+    dunit (s && s0) =
+  dflip (1 / 4 : R).
+Proof.
+(* This is in mathcomp land. *)
+Admitted.
+
+Lemma prog_semantics :
+  unary_ThetaDens0 chBool prog = dflip (1 / 4 : R).
+Proof.
+  rewrite /unary_ThetaDens0 //=.
+  rewrite /SDistr_bind /SDistr_unit //=.
+  rewrite /fair_coin_distr //=.
+  exact probability_fact.
+Qed.
 
 End coin_flips.
 
